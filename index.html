@@ -1,0 +1,292 @@
+﻿<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StreamShift — Live UI Preview</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#fef2f2',
+                            500: '#ef4444',
+                            600: '#dc2626',
+                            700: '#b91c1c',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans selection:bg-rose-600 selection:text-white">
+
+    <!-- Top Navigation -->
+    <header class="border-b border-slate-800/80 bg-slate-900/60 backdrop-blur-md sticky top-0 z-50">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-red-600 to-rose-400 flex items-center justify-center shadow-lg shadow-red-500/20">
+                    <i data-lucide="play" class="w-5 h-5 text-white fill-white ml-0.5"></i>
+                </div>
+                <div>
+                    <span class="font-bold text-lg tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">StreamShift</span>
+                    <span class="text-[10px] px-1.5 py-0.5 ml-1.5 font-medium rounded bg-rose-500/20 text-rose-300 border border-rose-500/30">Live UI Preview</span>
+                </div>
+            </div>
+            <div class="flex items-center space-x-3 text-xs font-medium">
+                <a href="https://github.com/olyxmintabansos-byte/yt-converter" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 transition-colors border border-slate-700">
+                    <i data-lucide="github" class="w-4 h-4"></i>
+                    GitHub Repo
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 py-10 flex flex-col items-center">
+        
+        <!-- Info Banner -->
+        <div class="w-full mb-6 p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-300 text-xs flex items-center gap-2">
+            <i data-lucide="info" class="w-4 h-4 shrink-0"></i>
+            <span>Ini adalah <strong>Live Preview Antarmuka</strong> di GitHub Pages. Untuk mengonversi dan mengunduh file secara penuh, jalankan versi lokal dengan Python & FFmpeg.</span>
+        </div>
+
+        <!-- Hero Header -->
+        <div class="text-center max-w-2xl mb-8 space-y-3">
+            <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white">
+                Konversi YouTube ke <span class="bg-gradient-to-r from-red-500 to-rose-400 bg-clip-text text-transparent">MP3 & MP4</span>
+            </h1>
+            <p class="text-sm sm:text-base text-slate-400">
+                Pratinjau antarmuka web modern dengan live metadata extractor dan progress visualizer.
+            </p>
+        </div>
+
+        <!-- Input Box Section -->
+        <div class="w-full bg-slate-900/80 border border-slate-800 p-2.5 sm:p-3 rounded-2xl shadow-2xl backdrop-blur-xl mb-6">
+            <form id="urlForm" class="flex flex-col sm:flex-row gap-2">
+                <div class="relative flex-1 flex items-center">
+                    <i data-lucide="link" class="w-5 h-5 absolute left-3.5 text-slate-500"></i>
+                    <input 
+                        type="url" 
+                        id="videoUrl" 
+                        value="https://www.youtube.com/watch?v=jNQXAC9IVRw"
+                        placeholder="Tempel link YouTube di sini..." 
+                        required
+                        class="w-full pl-11 pr-24 py-3.5 bg-slate-950/70 border border-slate-800 rounded-xl text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-rose-500/50 focus:border-rose-500 text-sm transition-all"
+                    >
+                    <button 
+                        type="button" 
+                        id="pasteBtn"
+                        class="absolute right-2.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors flex items-center gap-1.5"
+                    >
+                        <i data-lucide="clipboard" class="w-3.5 h-3.5"></i>
+                        Paste
+                    </button>
+                </div>
+                <button 
+                    type="submit" 
+                    id="submitBtn"
+                    class="px-6 py-3.5 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-medium text-sm rounded-xl transition-all shadow-lg shadow-red-600/30 flex items-center justify-center gap-2"
+                >
+                    <span id="btnText">Analisis Link</span>
+                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </button>
+            </form>
+        </div>
+
+        <!-- Alert Notification -->
+        <div id="alertBox" class="w-full hidden mb-6 p-4 rounded-xl text-sm flex items-start gap-3 transition-all">
+            <i id="alertIcon" data-lucide="alert-circle" class="w-5 h-5 shrink-0 mt-0.5"></i>
+            <div id="alertMsg" class="flex-1"></div>
+        </div>
+
+        <!-- Video Card & Format Options -->
+        <div id="resultCard" class="w-full hidden bg-slate-900/60 border border-slate-800/80 rounded-2xl p-5 sm:p-6 shadow-xl backdrop-blur-md mb-8">
+            <div class="flex flex-col md:flex-row gap-6">
+                <!-- Thumbnail & Meta -->
+                <div class="w-full md:w-5/12 flex flex-col gap-3">
+                    <div class="relative rounded-xl overflow-hidden aspect-video bg-slate-950 border border-slate-800 shadow-md">
+                        <img id="videoThumb" src="" alt="Thumbnail" class="w-full h-full object-cover">
+                        <span id="videoDuration" class="absolute bottom-2.5 right-2.5 px-2 py-0.5 rounded bg-black/80 text-white font-mono text-xs font-medium backdrop-blur-sm">
+                            0:19
+                        </span>
+                    </div>
+                    <div>
+                        <h3 id="videoTitle" class="font-bold text-base text-slate-100 line-clamp-2 leading-snug">
+                            Judul Video
+                        </h3>
+                        <div class="flex items-center gap-2 mt-2 text-xs text-slate-400">
+                            <span id="videoAuthor" class="font-medium text-slate-300 flex items-center gap-1">
+                                <i data-lucide="user" class="w-3.5 h-3.5"></i>
+                                Channel
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Convert Controls -->
+                <div class="w-full md:w-7/12 flex flex-col justify-between border-t md:border-t-0 md:border-l border-slate-800 md:pl-6 pt-4 md:pt-0">
+                    <div>
+                        <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-3">
+                            Pilih Format Konversi
+                        </span>
+
+                        <!-- Format Switcher -->
+                        <div class="grid grid-cols-2 p-1 bg-slate-950/80 border border-slate-800 rounded-xl mb-5">
+                            <button type="button" id="tabMp3" class="tab-btn active py-2.5 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 transition-all">
+                                <i data-lucide="music" class="w-4 h-4"></i>
+                                Audio (MP3)
+                            </button>
+                            <button type="button" id="tabMp4" class="tab-btn py-2.5 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 text-slate-400 hover:text-slate-200 transition-all">
+                                <i data-lucide="video" class="w-4 h-4"></i>
+                                Video (MP4)
+                            </button>
+                        </div>
+
+                        <!-- MP3 Options -->
+                        <div id="mp3Section" class="space-y-3">
+                            <label class="text-xs font-medium text-slate-400 block">Kualitas Audio:</label>
+                            <div class="grid grid-cols-3 gap-2">
+                                <label class="quality-card active flex flex-col p-3 rounded-xl border border-rose-500 bg-rose-500/10 cursor-pointer text-center transition-all">
+                                    <input type="radio" name="audioQuality" value="320" checked class="hidden">
+                                    <span class="text-sm font-bold text-rose-400">320 kbps</span>
+                                    <span class="text-[11px] text-slate-400 mt-0.5">Ultra High</span>
+                                </label>
+                                <label class="quality-card flex flex-col p-3 rounded-xl border border-slate-800 bg-slate-950/50 hover:border-slate-700 cursor-pointer text-center transition-all">
+                                    <input type="radio" name="audioQuality" value="192" class="hidden">
+                                    <span class="text-sm font-bold text-slate-200">192 kbps</span>
+                                    <span class="text-[11px] text-slate-400 mt-0.5">Standar</span>
+                                </label>
+                                <label class="quality-card flex flex-col p-3 rounded-xl border border-slate-800 bg-slate-950/50 hover:border-slate-700 cursor-pointer text-center transition-all">
+                                    <input type="radio" name="audioQuality" value="128" class="hidden">
+                                    <span class="text-sm font-bold text-slate-200">128 kbps</span>
+                                    <span class="text-[11px] text-slate-400 mt-0.5">Ringan</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- MP4 Options -->
+                        <div id="mp4Section" class="hidden space-y-3">
+                            <label class="text-xs font-medium text-slate-400 block">Resolusi Video:</label>
+                            <div class="grid grid-cols-3 gap-2">
+                                <label class="quality-card active flex flex-col p-3 rounded-xl border border-rose-500 bg-rose-500/10 cursor-pointer text-center transition-all">
+                                    <input type="radio" name="videoResolution" value="1080" checked class="hidden">
+                                    <span class="text-sm font-bold text-rose-400">1080p</span>
+                                    <span class="text-[11px] text-slate-400 mt-0.5">Full HD</span>
+                                </label>
+                                <label class="quality-card flex flex-col p-3 rounded-xl border border-slate-800 bg-slate-950/50 hover:border-slate-700 cursor-pointer text-center transition-all">
+                                    <input type="radio" name="videoResolution" value="720" class="hidden">
+                                    <span class="text-sm font-bold text-slate-200">720p</span>
+                                    <span class="text-[11px] text-slate-400 mt-0.5">HD</span>
+                                </label>
+                                <label class="quality-card flex flex-col p-3 rounded-xl border border-slate-800 bg-slate-950/50 hover:border-slate-700 cursor-pointer text-center transition-all">
+                                    <input type="radio" name="videoResolution" value="480" class="hidden">
+                                    <span class="text-sm font-bold text-slate-200">480p</span>
+                                    <span class="text-[11px] text-slate-400 mt-0.5">SD</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Button -->
+                    <div class="mt-6">
+                        <button 
+                            id="startConvertBtn"
+                            class="w-full py-3.5 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-semibold text-sm shadow-lg shadow-red-600/25 transition-all flex items-center justify-center gap-2"
+                        >
+                            <i data-lucide="zap" class="w-4 h-4"></i>
+                            Simulasi Konversi (Live Demo)
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Conversion Progress Card -->
+        <div id="progressCard" class="w-full hidden bg-slate-900/70 border border-slate-800 rounded-2xl p-6 shadow-2xl backdrop-blur-md mb-8">
+            <div class="flex items-center justify-between mb-3">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-3 h-3 rounded-full bg-rose-500 animate-ping"></div>
+                    <span id="progressMessage" class="text-sm font-medium text-slate-200">Menghubungi engine konversi...</span>
+                </div>
+                <span id="progressPercent" class="text-sm font-mono font-bold text-rose-400">0%</span>
+            </div>
+
+            <div class="w-full bg-slate-950 rounded-full h-3.5 p-0.5 border border-slate-800 overflow-hidden mb-3">
+                <div id="progressBar" class="bg-gradient-to-r from-red-600 to-rose-500 h-full rounded-full transition-all duration-300" style="width: 0%"></div>
+            </div>
+
+            <div class="flex items-center justify-between text-xs text-slate-400">
+                <span id="progressSpeed" class="flex items-center gap-1">
+                    <i data-lucide="activity" class="w-3.5 h-3.5"></i> Kecepatan: 2.85 MB/s
+                </span>
+                <span id="progressEta" class="flex items-center gap-1">
+                    <i data-lucide="clock" class="w-3.5 h-3.5"></i> Perkiraan: 3 detik
+                </span>
+            </div>
+        </div>
+
+        <!-- Download Finished Card -->
+        <div id="downloadReadyCard" class="w-full hidden bg-emerald-950/20 border border-emerald-500/30 rounded-2xl p-6 shadow-xl backdrop-blur-md mb-8 text-center space-y-4">
+            <div class="w-14 h-14 mx-auto rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center border border-emerald-500/30">
+                <i data-lucide="check" class="w-8 h-8"></i>
+            </div>
+            <div>
+                <h3 class="text-lg font-bold text-white">Simulasi Konversi Selesai!</h3>
+                <p id="downloadFileInfo" class="text-xs text-slate-300 mt-1 font-mono break-all">Me at the zoo.mp3 (320 kbps)</p>
+            </div>
+            <div class="p-4 rounded-xl bg-slate-900/60 border border-slate-800 max-w-lg mx-auto text-left text-xs text-slate-300 space-y-2">
+                <div class="font-semibold text-rose-400 flex items-center gap-1.5">
+                    <i data-lucide="terminal" class="w-4 h-4"></i> Ingin unduhan file asli ke komputer Anda?
+                </div>
+                <p class="text-slate-400">
+                    Jalankan repositori ini secara lokal dengan perintah:
+                </p>
+                <code class="block p-2 rounded bg-slate-950 font-mono text-emerald-400 text-[11px]">
+                    git clone https://github.com/olyxmintabansos-byte/yt-converter.git<br>
+                    pip install -r requirements.txt<br>
+                    .\run.bat
+                </code>
+            </div>
+        </div>
+
+        <!-- Features Grid -->
+        <div class="w-full grid grid-cols-1 sm:grid-cols-3 gap-4 mt-8 border-t border-slate-800/80 pt-8 text-slate-400">
+            <div class="p-4 rounded-xl bg-slate-900/30 border border-slate-800/50">
+                <i data-lucide="shield-check" class="w-6 h-6 text-rose-500 mb-2"></i>
+                <h4 class="text-slate-200 font-semibold text-sm">100% Bebas Iklan</h4>
+                <p class="text-xs mt-1 text-slate-400">Tidak ada pop-up mencurigakan atau redirect iklan yang mengganggu.</p>
+            </div>
+            <div class="p-4 rounded-xl bg-slate-900/30 border border-slate-800/50">
+                <i data-lucide="headphones" class="w-6 h-6 text-rose-500 mb-2"></i>
+                <h4 class="text-slate-200 font-semibold text-sm">Audio 320 kbps</h4>
+                <p class="text-xs mt-1 text-slate-400">Ekstraksi audio resolusi tinggi dengan encoder FFmpeg teroptimasi.</p>
+            </div>
+            <div class="p-4 rounded-xl bg-slate-900/30 border border-slate-800/50">
+                <i data-lucide="film" class="w-6 h-6 text-rose-500 mb-2"></i>
+                <h4 class="text-slate-200 font-semibold text-sm">Video Hingga 1080p</h4>
+                <p class="text-xs mt-1 text-slate-400">Menggabungkan stream video HD dan audio secara mulus ke MP4.</p>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800/80 py-6 text-center text-xs text-slate-500">
+        <p>© 2026 StreamShift • Dibuat untuk tujuan edukasi & arsip media pribadi.</p>
+    </footer>
+
+    <script src="./app.js"></script>
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>
