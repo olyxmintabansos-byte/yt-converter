@@ -1,4 +1,4 @@
-﻿# 🎵 StreamShift — YouTube to MP3 & MP4 Converter (Local)
+﻿# 🎵 StreamShift — YouTube to MP3 & MP4 Converter (Local) — by Olyx
 
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3.10%2B-blue?style=for-the-badge&logo=python" alt="Python Version" />
@@ -104,4 +104,5 @@ This project is created strictly for **educational, personal study, and local me
 
 ## 📝 License
 
-This project is open-source and licensed under the [MIT License](LICENSE).
+© 2026 **Olyx**. This project is open-source and licensed under the [MIT License](LICENSE).
+
