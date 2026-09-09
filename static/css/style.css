@@ -1,0 +1,30 @@
+﻿/* Custom Transitions & Component Styles */
+.tab-btn.active {
+    background-color: #e11d48;
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(225, 29, 72, 0.3);
+}
+
+.quality-card.active {
+    border-color: #f43f5e !important;
+    background-color: rgba(244, 63, 94, 0.1) !important;
+}
+
+.quality-card.active span:first-of-type {
+    color: #fb7185 !important;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+}
+::-webkit-scrollbar-track {
+    background: #020617;
+}
+::-webkit-scrollbar-thumb {
+    background: #1e293b;
+    border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #334155;
+}
