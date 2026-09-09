@@ -8,6 +8,10 @@
   <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="License" />
 </p>
 
+<p align="center">
+  <img src="preview.png" alt="StreamShift UI Preview" width="850" />
+</p>
+
 An ad-free, sleek, and high-performance local web application designed to convert and archive YouTube videos into **MP3 (Audio)** and **MP4 (Video)** with real-time download and conversion progress tracking.
 
 ---
@@ -47,6 +51,7 @@ yt-converter/
 │   └── index.html           # Tailwind CSS glassmorphic user interface
 ├── downloads/               # Temporary storage for converted media files
 ├── .gitignore
+├── preview.png              # UI Screenshot preview
 ├── requirements.txt         # Project Python dependencies
 ├── run.bat                  # 1-Click launcher for Windows
 └── README.md
@@ -58,7 +63,7 @@ yt-converter/
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/<your-username>/yt-converter.git
+git clone https://github.com/olyxmintabansos-byte/yt-converter.git
 cd yt-converter
 ```
 
